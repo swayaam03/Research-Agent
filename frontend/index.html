@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Research Agent - Autonomous research powered by LangGraph. Get comprehensive research reports with citations.">
+    
+    <title>AI Research Agent</title>
+    
+    <!-- Google Fonts: Inter for clean, modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Animated background mesh -->
+    <div class="bg-mesh" aria-hidden="true"></div>
+
+    <!-- Main Application Container -->
+    <div id="app" class="app-container">
+        
+        <!-- ==================== LANDING VIEW ==================== -->
+        <section id="landing-view" class="view active">
+            <!-- Floating particles -->
+            <div class="particles" aria-hidden="true">
+                <span></span><span></span><span></span>
+                <span></span><span></span><span></span>
+            </div>
+
+            <!-- Logo and Title -->
+            <div class="landing-header">
+                <div class="logo-icon">
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" stroke="url(#grad1)" stroke-width="2.5" fill="none"/>
+                        <path d="M16 20C16 17.7909 17.7909 16 20 16H28C30.2091 16 32 17.7909 32 20V28C32 30.2091 30.2091 32 28 32H20C17.7909 32 16 30.2091 16 28V20Z" fill="url(#grad1)" opacity="0.15"/>
+                        <path d="M22 20L26 24L22 28" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="grad1" x1="0" y1="0" x2="48" y2="48">
+                                <stop offset="0%" stop-color="#06b6d4"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1 class="landing-title">What would you like to research?</h1>
+                <p class="landing-subtitle">Autonomous AI-powered research with multi-source analysis and citations</p>
+            </div>
+
+            <!-- Search Input Card -->
+            <div class="input-card">
+                <div class="input-wrapper">
+                    <textarea 
+                        id="query-input" 
+                        placeholder="Enter your research topic..."
+                        rows="3"
+                        maxlength="500"
+                        aria-label="Research query input"
+                    ></textarea>
+                    <div class="input-footer">
+                        <div class="input-actions">
+                            <button class="chip-btn" data-query="Research the latest advancements in Quantum Computing" id="chip-quantum">
+                                <span class="chip-icon">⚛️</span> Quantum Computing
+                            </button>
+                            <button class="chip-btn" data-query="Compare LangGraph and CrewAI for building enterprise AI agents" id="chip-compare">
+                                <span class="chip-icon">⚖️</span> Compare Frameworks
+                            </button>
+                            <button class="chip-btn" data-query="What are the latest breakthroughs in AI for drug discovery?" id="chip-ai-drug">
+                                <span class="chip-icon">💊</span> AI Drug Discovery
+                            </button>
+                        </div>
+                        <button id="submit-btn" class="submit-btn" aria-label="Start research">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <p class="input-hint">Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to submit</p>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📋</div>
+                    <h3>Smart Planning</h3>
+                    <p>Decomposes your query into targeted sub-questions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Multi-Source Search</h3>
+                    <p>Searches and reads multiple web sources for evidence</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Deep Analysis</h3>
+                    <p>Compares findings, detects agreements &amp; contradictions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3>Cited Reports</h3>
+                    <p>Generates professional reports with proper citations</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== RESEARCH VIEW ==================== -->
+        <section id="research-view" class="view">
+            
+            <!-- Top Bar -->
+            <div class="research-topbar">
+                <button id="back-btn" class="back-btn" aria-label="New research">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    New Research
+                </button>
+                <div id="research-query-display" class="query-display"></div>
+            </div>
+
+            <!-- Progress Pipeline -->
+            <div class="pipeline-container">
+                <div class="pipeline">
+                    <div class="pipeline-step" data-node="planner" id="step-planner">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                        </div>
+                        <span class="step-label">Planning</span>
+                    </div>
+                    <div class="pipeline-connector"></div>
+                    <div class="pipeline-step" data-node="searcher" id="step-searcher">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                        </div>
+                        <span class="step-label">Searching</span>
+                    </div>
+                    <div class="pipeline-connector"></div>
+                    <div class="pipeline-step" data-node="extractor" id="step-extractor">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                        </div>
+                        <span class="step-label">Extracting</span>
+                    </div>
+                    <div class="pipeline-connector"></div>
+                    <div class="pipeline-step" data-node="analyzer" id="step-analyzer">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                        </div>
+                        <span class="step-label">Analyzing</span>
+                    </div>
+                    <div class="pipeline-connector"></div>
+                    <div class="pipeline-step" data-node="reporter" id="step-reporter">
+                        <div class="step-indicator">
+                            <div class="step-dot"></div>
+                        </div>
+                        <span class="step-label">Reporting</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Log -->
+            <div id="progress-log" class="progress-log">
+                <div class="log-entry initial">
+                    <span class="log-dot"></span>
+                    <span class="log-text">Initializing research agent...</span>
+                </div>
+            </div>
+
+            <!-- Report Container -->
+            <div id="report-container" class="report-container hidden">
+                <div class="report-header">
+                    <h2>📄 Research Report</h2>
+                    <button id="copy-report-btn" class="copy-btn" aria-label="Copy report">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy
+                    </button>
+                </div>
+                <div id="report-content" class="report-content markdown-body"></div>
+            </div>
+
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

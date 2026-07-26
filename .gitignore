@@ -1,0 +1,90 @@
+# ============================================
+# AI Research Agent - .gitignore
+# ============================================
+
+# -------------- Python --------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+pip-log.txt
+pip-delete-this-directory.txt
+
+# -------------- Virtual Environment --------------
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# -------------- Environment Variables (SECRETS) --------------
+.env
+.env.local
+.env.production
+.env.staging
+!.env.example
+
+# -------------- IDE / Editor --------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# -------------- OS Files --------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# -------------- Logs --------------
+*.log
+logs/
+npm-debug.log*
+
+# -------------- Testing --------------
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# -------------- Distribution / Build --------------
+*.manifest
+*.spec
+MANIFEST
+
+# -------------- Jupyter Notebooks --------------
+.ipynb_checkpoints/
+
+# -------------- mypy / type checkers --------------
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+
+# -------------- LangGraph / LangChain --------------
+langgraph-checkpoints/
+.langsmith/
+
+# -------------- Research Output (optional local cache) --------------
+research_cache/
+temp_reports/
+
+# -------------- Node (if any frontend tooling) --------------
+node_modules/
+package-lock.json
