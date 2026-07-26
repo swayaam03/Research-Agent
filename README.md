@@ -283,20 +283,11 @@ Access the web portal by visiting `http://localhost:8000` in your web browser.
 ## Future Roadmap & Planned Enhancements
 
 ### 1. Document Export Engine (PDF & DOCX)
-- **One-Click PDF Export**: Integrated PDF generation engine (via ReportLab / WeasyPrint) allowing users to download styled, publication-ready PDF research reports complete with custom headers, page numbering, and hyperlinked footnotes.
-- **Microsoft Word (.docx) Generation**: Direct export to `.docx` format retaining heading hierarchies, callout boxes, and formatted reference tables for easy editing in office suites.
-- **Markdown Export**: Direct download button for raw `.md` files to import into tools like Obsidian or Notion.
 
 ### 2. Advanced UI/UX & Web Dashboard Upgrades
-- **Interactive StateGraph Visualizer**: A live canvas rendering the actual LangGraph node transitions in real-time, highlighting active execution branches and latency per node.
-- **Real-Time Token & Latency Metrics**: Live UI counters displaying exact prompt tokens, completion tokens, model name, and estimated request cost per research run.
-- **Theme Customization & Print Mode**: Toggle between Slate Dark, Pure OLED, and Light Mode with print-optimized CSS layouts.
-- **Human-in-the-Loop Plan Review**: Interactive modal allowing users to inspect, modify, or approve sub-questions after the `Planner` node finishes before web execution begins.
 
 ### 3. Multi-Agent & Storage Extensions
-- **Multi-Modal Document Research**: Upload local PDF research papers or documents to blend local knowledge with external web searches.
-- **Long-Term State Checkpointing**: Replace `MemorySaver` with `PostgresSaver` for persistent research session storage and historical research lookup.
-- **Multi-Agent Collaboration**: Split research into specialized parallel sub-agents (e.g., Technical Researcher, Financial Analyst, Criticism Agent) coordinated by a supervisor graph.
+
 
 ---
 
