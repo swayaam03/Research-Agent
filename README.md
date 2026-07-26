@@ -100,6 +100,96 @@ The system operates as a stateful, event-driven graph powered by LangGraph.
 
 ---
 
+## LangGraph StateGraph Architecture
+
+The orchestration engine is constructed as a stateful graph using LangGraph's `StateGraph`.
+
+### 1. Mermaid StateGraph Visualization
+
+```mermaid
+graph TD
+    __start__([START]) --> planner[Planner Node]
+    
+    planner -->|should_search| searcher[Searcher Node]
+    planner -.->|no queries| reporter
+    
+    searcher -->|should_extract| extractor[Extractor Node]
+    searcher -.->|no results| reporter
+    
+    extractor --> analyzer[Analyzer Node]
+    
+    analyzer -->|should_continue_research: needs_more_research=True| searcher
+    analyzer -->|should_continue_research: sufficient| reporter[Reporter Node]
+    
+    reporter --> __end__([END])
+```
+
+### 2. State Schema Design (`ResearchState`)
+
+The state schema is defined as a Python `TypedDict` with reducer functions (`operator.add`) for accumulating list fields across graph iterations.
+
+```python
+from typing import TypedDict, Annotated, Optional
+import operator
+
+class ResearchState(TypedDict, total=False):
+    # Input
+    user_query: str
+    
+    # Planning
+    research_plan: Optional[ResearchPlan]
+    search_queries: list[str]
+    
+    # Search & Extraction (Reducers append new items across iterations)
+    search_results: Annotated[list[SearchResult], operator.add]
+    extracted_content: Annotated[list[ExtractedContent], operator.add]
+    
+    # Analysis & Reporting
+    source_summaries: list[SourceSummary]
+    analysis: Optional[AnalysisResult]
+    citations: list[Citation]
+    final_report: str
+    
+    # Execution Tracking (Reducers append logs and errors)
+    status: str
+    current_iteration: int
+    errors: Annotated[list[str], operator.add]
+    execution_log: Annotated[list[str], operator.add]
+```
+
+### 3. StateGraph Compilation & Conditional Edge Routing
+
+```python
+from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.memory import MemorySaver
+
+# 1. Initialize StateGraph with state schema
+workflow = StateGraph(ResearchState)
+
+# 2. Add Graph Nodes
+workflow.add_node("planner", planner_node)
+workflow.add_node("searcher", searcher_node)
+workflow.add_node("extractor", extractor_node)
+workflow.add_node("analyzer", analyzer_node)
+workflow.add_node("reporter", reporter_node)
+
+# 3. Set Entry Point
+workflow.set_entry_point("planner")
+
+# 4. Add Conditional Edges for Dynamic Routing
+workflow.add_conditional_edges("planner", should_search, {"searcher": "searcher", "reporter": "reporter"})
+workflow.add_conditional_edges("searcher", should_extract, {"extractor": "extractor", "reporter": "reporter"})
+workflow.add_edge("extractor", "analyzer")
+workflow.add_conditional_edges("analyzer", should_continue_research, {"searcher": "searcher", "reporter": "reporter"})
+workflow.add_edge("reporter", END)
+
+# 5. Compile Graph with Checkpointer
+checkpointer = MemorySaver()
+research_graph = workflow.compile(checkpointer=checkpointer)
+```
+
+---
+
 ## Performance Optimizations & Benchmarks
 
 The graph architecture was optimized to minimize token consumption and reduce end-to-end execution latency without sacrificing report accuracy.
