@@ -292,5 +292,4 @@ Access the web portal by visiting `http://localhost:8000` in your web browser.
 ---
 
 ## License
-
 Distributed under the MIT License. See `LICENSE` for more information.
